@@ -4,7 +4,7 @@ block content
   h1 Вітаю!
   if user
     p Ви увійшли як #{user.email}
-    a(href="/protected") Перейти до захищеної зони
+    a(href="/protected") Захищена зона
     a(href="/auth/logout") Вийти
   else
     a(href="/auth/login") Вхід
@@ -13,6 +13,17 @@ block content
   p Тема: #{theme}
   button(data-theme="light") Світла
   button(data-theme="dark") Темна
+
+  h2 Останні пости
+  if posts.length
+    each post in posts
+      article
+        h3= post.title
+        p= post.content
+        small Створено: #{post.createdAt.toLocaleString()}
+  else
+    p Немає постів
+
   script(src="/public/js/theme.js")
 
   
