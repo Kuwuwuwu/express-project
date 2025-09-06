@@ -1,0 +1,8 @@
+extends layouts/layout
+
+block content
+  h2 Реєстрація
+  form(action="/auth/register", method="POST")
+    input(type="email", name="email", placeholder="Email")
+    input(type="password", name="password", placeholder="Пароль")
+    button(type="submit") Зареєструватися

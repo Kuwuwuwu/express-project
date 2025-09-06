@@ -1,10 +1,9 @@
-import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import themeRouter from './routes/theme.js';
-import dotenv from 'dotenv';
+import session from 'express-session';
+import passport from 'passport';
+import configurePassport from './config/passport.js';
+import authRouter from './routes/auth.js';
+import auth from './middleware/auth.js';
 
-dotenv.config();
 
 const app = express();
 const __dirname = path.resolve();
@@ -26,6 +25,30 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 // PUG
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+// Сесії та аутентифікація
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    maxAge: 7 * 24 * 3600 * 1000
+  }
+}));
+
+app.use('/auth', authRouter);
+
+app.get('/protected', auth, (req, res) => {
+  res.render('protected', { user: req.user });
+});
+
+configurePassport(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 // Роутинг
 app.use(themeRouter);
