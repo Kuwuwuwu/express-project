@@ -2,9 +2,17 @@ extends layouts/layout
 
 block content
   h1 Вітаю!
+  if user
+    p Ви увійшли як #{user.email}
+    a(href="/protected") Перейти до захищеної зони
+    a(href="/auth/logout") Вийти
+  else
+    a(href="/auth/login") Вхід
+    a(href="/auth/register") Реєстрація
+
   p Тема: #{theme}
-  button#light-btn(data-theme="light") Light
-  button#dark-btn(data-theme="dark") Dark
+  button(data-theme="light") Світла
+  button(data-theme="dark") Темна
   script(src="/public/js/theme.js")
 
   

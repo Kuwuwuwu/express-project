@@ -11,8 +11,3 @@ export default function auth(req, res, next) {
     res.status(401).send('Invalid token');
   }
 }
-
-export default function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  res.redirect('/auth/login');
-}
