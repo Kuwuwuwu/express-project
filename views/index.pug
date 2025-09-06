@@ -1,0 +1,10 @@
+extends layouts/layout
+
+block content
+  h1 Вітаю!
+  p Тема: #{theme}
+  button#light-btn(data-theme="light") Light
+  button#dark-btn(data-theme="dark") Dark
+  script(src="/public/js/theme.js")
+
+  

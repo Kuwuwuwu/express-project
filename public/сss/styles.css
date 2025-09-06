@@ -1,0 +1,15 @@
+body.light {
+    background-color: white;
+    color: black;
+}
+
+body.dark {
+    background-color: #222;
+    color: white;
+}
+
+button {
+    margin: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
