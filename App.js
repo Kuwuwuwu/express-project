@@ -1,3 +1,5 @@
+import connectDB from './config/db.js';
+await connectDB();
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
