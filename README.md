@@ -18,6 +18,14 @@
 • 	Pug — шаблони
 • 	dotenv — змінні середовища
 
+## 📌 Залежності
+
+- express  
+- cookie-parser  
+- pug  
+- nodemon (для dev-режиму)  
+- mongoose  
+
 🚀 Запуск
 npm install
 npm run dev
