@@ -26,6 +26,15 @@
 - nodemon (для dev-режиму)  
 - mongoose  
 
+## 📥 Встановлення залежностей
+
+Перейдіть у кореневу папку проєкту:
+
+```bash
+cd express-project
+npm install express cookie-parser pug mongoose
+npm install --save-dev nodemon
+
 🚀 Запуск
 npm install
 npm run dev
