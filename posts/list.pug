@@ -1,0 +1,15 @@
+extends ../layouts/layout
+
+block content
+  h1 Список постів
+
+  if posts && posts.length
+    ul
+      each post in posts
+        li
+          a(href=`/posts/${post._id}`)= post.title
+  else
+    p Немає жодного посту
+
+  a.btn(href="/posts/new") Додати новий пост
+  

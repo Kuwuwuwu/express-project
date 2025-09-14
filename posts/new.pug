@@ -1,0 +1,11 @@
+extends ../layouts/layout
+
+block content
+  h1 Створити пост
+
+  form(action="/posts" method="POST")
+    label(for="title") Заголовок
+    input#title(type="text" name="title" required)
+    label(for="content") Зміст
+    textarea#content(name="content" rows="5" required)
+    button.btn(type="submit") Опублікувати

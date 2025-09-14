@@ -1,29 +1,13 @@
 extends layouts/layout
 
 block content
-  h1 Вітаю!
-  if user
-    p Ви увійшли як #{user.email}
-    a(href="/protected") Захищена зона
-    a(href="/auth/logout") Вийти
-  else
-    a(href="/auth/login") Вхід
-    a(href="/auth/register") Реєстрація
+  h1 Головна сторінка
 
-  p Тема: #{theme}
-  button(data-theme="light") Світла
-  button(data-theme="dark") Темна
-
-  h2 Останні пости
-  if posts.length
+  if posts && posts.length
     each post in posts
       article
-        h3= post.title
-        p= post.content
-        small Створено: #{post.createdAt.toLocaleString()}
+        h2: a(href=`/posts/${post._id}`)= post.title
+        p= post.excerpt
   else
-    p Немає постів
-
-  script(src="/public/js/theme.js")
-
+    p Немає жодного посту.
   

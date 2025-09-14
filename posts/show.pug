@@ -1,0 +1,14 @@
+extends ../layouts/layout
+
+block content
+  h1= post.title
+
+  p= post.content
+
+  if user && user._id.toString() === post.author.toString()
+    a.btn(href=`/posts/${post._id}/edit`) Редагувати
+    form(action=`/posts/${post._id}?_method=DELETE` method="POST")
+      button.btn(type="submit") Видалити
+
+  a(href="/posts") ← назад до списку
+  

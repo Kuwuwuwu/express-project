@@ -1,81 +1,49 @@
-import connectDB from './config/db.js';
-await connectDB();
-import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import passport from 'passport';
-import dotenv from 'dotenv';
+// app.js
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import cookieParser from "cookie-parser";
 
-import configurePassport from './config/passport.js';
-import authRouter from './routes/auth.js';
-import themeRouter from './routes/theme.js';
-import indexRouter from './routes/index.js';
-import ensureAuthenticated from './middleware/ensureAuthenticated.js';
+import { connectDB } from "./config/db.js";
+import Post from "./models/Post.js";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const __dirname = path.resolve();
 
-//
-// 🔧 Middleware
-//
-app.use(express.json());
+// 1. View engine (Pug)
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "pug");
+
+// 2. Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: false, // true у продакшн через HTTPS
-    maxAge: 7 * 24 * 3600 * 1000
+// 3. Підключення до MongoDB
+await connectDB();
+
+// 4. Маршрути
+app.get("/", async (req, res, next) => {
+  try {
+    const posts = await Post.find().lean();
+    res.render("index", {
+      title: "Головна",
+      theme: res.locals.theme,
+      posts,
+      user: req.user
+    });
+  } catch (err) {
+    next(err);
   }
-}));
-
-configurePassport(passport);
-app.use(passport.initialize());
-app.use(passport.session());
-
-//
-// 🎨 Тема з cookie
-//
-app.use((req, res, next) => {
-  res.locals.theme = req.cookies?.theme ?? 'light';
-  next();
 });
 
-//
-// 📁 Статика
-//
-app.use('/public', express.static(path.join(__dirname, 'public')));
+// ... інші маршрути auth, posts тощо ...
 
-//
-// 🖼️ Шаблони
-//
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
-//
-// 🚦 Роутинг
-//
-app.use('/', indexRouter);           // Головна сторінка
-app.use('/auth', authRouter);        // Реєстрація, вхід, вихід
-app.use(themeRouter);                // Перемикач теми
-
-//
-// 🔐 Захищений маршрут
-//
-app.get('/protected', ensureAuthenticated, (req, res) => {
-  res.render('protected', { user: req.user });
-});
-
-//
-// 🚀 Старт
-//
+// 5. Запуск сервера (повинен бути **поза** маршрутом)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

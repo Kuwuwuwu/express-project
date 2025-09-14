@@ -1,18 +1,12 @@
-import { Router } from 'express';
+import { Router } from "express";
+import { getTheme, setTheme } from "../controllers/themeController.js";
+
 const router = Router();
 
-router.post('/theme', (req, res) => {
-  const { theme } = req.body || {};
-  if (!theme) return res.status(400).json({ error: 'theme is required' });
+// підстановка теми у locals перед рендером всіх маршрутів
+router.use(getTheme);
 
-  res.cookie('theme', theme, {
-    maxAge: 30 * 24 * 3600 * 1000, // 30 днів
-    httpOnly: false,
-    sameSite: 'lax'
-  });
-
-  res.json({ success: true });
-});
+router.post("/theme", setTheme);
 
 export default router;
 

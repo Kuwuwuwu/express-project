@@ -1,8 +1,42 @@
-extends layouts/layout
+// views/auth/register.pug
+extends ../layouts/layout
 
 block content
-  h2 Реєстрація
-  form(action="/auth/register", method="POST")
-    input(type="email", name="email", placeholder="Email")
-    input(type="password", name="password", placeholder="Пароль")
-    button(type="submit") Зареєструватися
+  h1 Реєстрація
+
+  //– показуємо помилки валідації, якщо вони передані масивом errors
+  if errors
+    ul.errors
+      each err in errors
+        li.error= err.msg
+
+  form(action="/auth/register" method="POST")
+    label(for="name") Ім’я
+    input#name(
+      type="text"
+      name="name"
+      required
+    )
+    label(for="email") Email
+    input#email(
+      type="email"
+      name="email"
+      required
+    )
+    label(for="password") Пароль
+    input#password(
+      type="password"
+      name="password"
+      required
+    )
+    label(for="confirm") Підтвердьте пароль
+    input#confirm(
+      type="password"
+      name="confirm"
+      required
+    )
+    button.btn.btn-success(type="submit") Зареєструватися
+
+  p
+    | Вже маєте акаунт?
+    a(href="/auth/login") Увійти

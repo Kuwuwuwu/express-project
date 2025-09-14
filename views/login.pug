@@ -1,8 +1,29 @@
-extends layouts/layout
+// views/auth/login.pug
+extends ../layouts/layout
 
 block content
-  h2 Вхід
-  form(action="/auth/login", method="POST")
-    input(type="email", name="email", placeholder="Email")
-    input(type="password", name="password", placeholder="Пароль")
-    button(type="submit") Увійти
+  h1 Увійти
+
+  //– flash-помилка чи ручна передача error
+  if error
+    div.alert.alert-danger= error
+
+  form(action="/auth/login" method="POST")
+    label(for="email") Email
+    input#email(
+      type="email"
+      name="email"
+      required
+      autofocus
+    )
+    label(for="password") Пароль
+    input#password(
+      type="password"
+      name="password"
+      required
+    )
+    button.btn.btn-primary(type="submit") Увійти
+
+  p
+    | Ще нема акаунту?
+    a(href="/auth/register") Зареєструватися

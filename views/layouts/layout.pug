@@ -1,9 +1,26 @@
+// views/layouts/layout.pug
 doctype html
-html(lang="uk")
+html(lang="uk" data-theme=theme)
   head
-    meta(charset="UTF-8")
+    meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Перемикач теми
-    link(rel="stylesheet", href="/public/css/style.css")
-  body(class=theme)
-    block content
+    title #{title || "My Express App"}
+    //– підключення CSS
+    link(rel="stylesheet", href="/css/style.css")
+  body
+    header
+      nav
+        ul
+          if user
+            li Привіт, #{user.name}
+            li: a(href="/auth/logout") Вийти
+          else
+            li: a(href="/auth/login") Увійти
+            li: a(href="/auth/register") Реєстрація
+        button#theme-toggle Тема: #{theme}
+    main
+      block content
+
+    //– підключення JS
+    script(src="/js/theme.js")
+    block scripts

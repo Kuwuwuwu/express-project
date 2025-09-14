@@ -1,0 +1,22 @@
+extends ../layouts/layout
+
+block content
+  h1 Редагувати пост
+
+  form(action=`/posts/${post._id}?_method=PUT` method="POST")
+    label(for="title") Заголовок
+    input#title(
+      type="text"
+      name="title"
+      value=post.title
+      required
+    )
+    label(for="content") Зміст
+    textarea#content(
+      name="content"
+      rows="5"
+      required
+    )= post.content
+    button.btn(type="submit") Зберегти зміни
+
+  a(href=`/posts/${post._id}`) ← повернутися до посту

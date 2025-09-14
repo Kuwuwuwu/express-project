@@ -1,13 +1,24 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 export default function auth(req, res, next) {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).send('No token');
+  const token = req.cookies?.token;
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
 
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
-    next();
-  } catch {
-    res.status(401).send('Invalid token');
+    // verify throws, якщо токен невалідний або прострочений
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // за бажанням: витягнути userId і підвантажити юзера з БД
+    // req.user = await User.findById(payload.id).lean();
+    req.user = payload;
+    
+    return next();
+  } catch (err) {
+    const message = err.name === "TokenExpiredError"
+      ? "Token expired"
+      : "Invalid token";
+    return res.status(401).json({ error: message });
   }
 }
