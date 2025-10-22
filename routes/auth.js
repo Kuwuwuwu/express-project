@@ -1,30 +1,32 @@
-import express from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { Router } from 'express';
+import passport from 'passport';
+import User from '../models/User.js';
 
-const router = express.Router();
-const users = [];  // замість БД
 
-// Регістрація
+const router = Router();
+
+router.get('/login', (req, res) => res.render('login'));
+router.get('/register', (req, res) => res.render('register'));
+
 router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
-  const hash = await bcrypt.hash(password, 10);
-  users.push({ username, password: hash });
-  res.sendStatus(201);
+  const { email, password } = req.body;
+  const existing = User.findByEmail(email);
+  if (existing) return res.redirect('/auth/login');
+  const user = await User.create({ email, password });
+  req.login(user, err => {
+    if (err) return res.redirect('/auth/login');
+    res.redirect('/protected');
+  });
 });
 
-// Логін
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(u => u.username === username);
-  if (!user) return res.status(400).send('No user');
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/protected',
+  failureRedirect: '/auth/login'
+}));
 
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(400).send('Wrong password');
-
-  const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
-  res.json({ success: true });
+router.get('/logout', (req, res) => {
+  req.logout(() => res.redirect('/'));
 });
 
 export default router;
+
