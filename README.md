@@ -1,55 +1,73 @@
-📦 Express Theme Switcher
-Проєкт на Express.js з підтримкою перемикання теми (світла/темна), збереженням вибору в cookie, Pug-шаблонами та фронтенд-скриптом без перезавантаження сторінки.
+# React + TypeScript + Vite
 
-🚀 Запуск
-npm install
-npm run dev
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+Currently, two official plugins are available:
 
-Сервер запуститься на http://localhost:3000
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## React Compiler
 
-📁 Структура
-express-project/
-├── app.js
-├── routes/
-│   └── theme.js
-├── views/
-│   ├── index.pug
-│   └── layouts/
-│       └── layout.pug
-├── public/
-│   ├── js/
-│   │   └── theme.js
-│   └── css/
-│       └── style.css
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Expanding the ESLint configuration
 
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-🧠 Логіка теми
-- Користувач натискає кнопку "Світла" або "Темна".
-- JS (theme.js) надсилає POST-запит на /theme з вибраною темою.
-- Бекенд (theme.js) зберігає тему в cookie.
-- При наступному заході бекенд читає cookie і передає тему в шаблон.
-- Pug-шаблон (layout.pug) вставляє клас теми в <body>, а CSS змінює фон.
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-🖼️ Pug-шаблони
-layout.pug — базовий каркас:
-doctype html
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-index.pug — контент сторінки:
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
 
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-🎨 CSS стилі
-style.css:
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-🔐 Cookie
-- Зберігається як theme=light або theme=dark
-- Термін дії: 30 днів
-- Доступний на фронтенді (httpOnly: false)
-
-📌 Залежності
-- express
-- cookie-parser
-- pug
-- nodemon (для dev-режиму)
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
